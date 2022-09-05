@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/mars_app"
 mongo = PyMongo(app)
 
-# Set up Flask routes
+# Set up Flask routes below.
 
 # Define route for index.html
 @app.route("/")

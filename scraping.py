@@ -23,6 +23,7 @@ def scrape_all():
     	"news_paragraph": news_paragraph,
     	"featured_image": featured_image(browser),
     	"facts": mars_facts(),
+    	"hemispheres": hemisphere_images(browser),
     	"last_modified": dt.datetime.now()
 	}
 
@@ -91,10 +92,42 @@ def mars_facts():
 
 	# Assign columns & set index of DataFrame
 	df.columns=['description', 'Mars', 'Earth']
+	df.drop(0, inplace=True)
 	df.set_index('description', inplace=True)
+	df.index.name = None
 
 	# Convert the table back to HTML
 	return df.to_html()
+
+# Define function to retrieve hemisphere images and titles
+def hemisphere_images(browser):
+	# 1. Use browser to visit the URL 
+	url = 'https://marshemispheres.com/'
+	browser.visit(url)
+
+	# 2. Create a list to hold the images and titles.
+	hemisphere_image_urls = []
+	images = range(4)
+
+	# 3. Write code to retrieve the image urls and titles for each hemisphere.
+	for i in images:
+	    hemispheres = {}
+	    browser.find_by_css('a.product-item h3')[i].click()
+	    
+	    # Get Image Link
+	    find_img = browser.links.find_by_text('Sample')
+	    hemispheres['img_url'] = find_img['href']
+
+	    # Get Image Title
+	    hemispheres['title'] = browser.find_by_tag('h2').text   
+
+	    # Append Current Image Link/Title to hemispheres list
+	    hemisphere_image_urls.append(hemispheres)    
+	    
+	    # Go back to get next image link/title
+	    browser.back()
+	return hemisphere_image_urls
+
 
 # Tell Flask the script is complete
 if __name__ == "__main__":
